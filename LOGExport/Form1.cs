@@ -90,6 +90,8 @@ namespace LOGExport {
                         writer.WriteElementString("MAC_BLUETOOTH", item.macBluetooth.Replace(".", string.Empty));
                         writer.WriteElementString("SERIAL_NUMBER", item.serialNumber.Replace("'", string.Empty));
                         writer.WriteEndElement();
+
+                        InsertDataBase(item.serialNumber.Replace("'", string.Empty), item.macWireless.Replace("'", string.Empty), item.macBluetooth.Replace(".", string.Empty));                        
                     }
 
                     writer.WriteEndElement();
