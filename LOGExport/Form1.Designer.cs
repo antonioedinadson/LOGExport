@@ -28,7 +28,7 @@ namespace LOGExport {
             this.BTNOpen = new System.Windows.Forms.Button();
             this.BTNLoad = new System.Windows.Forms.Button();
             this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
-            this.listView1 = new System.Windows.Forms.ListView();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.SuspendLayout();
             // 
             // textBox1
@@ -63,14 +63,14 @@ namespace LOGExport {
             this.BTNLoad.UseVisualStyleBackColor = true;
             this.BTNLoad.Click += new System.EventHandler(this.BTNLoad_Click);
             // 
-            // listView1
+            // groupBox1
             // 
-            this.listView1.HideSelection = false;
-            this.listView1.Location = new System.Drawing.Point(25, 75);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(790, 300);
-            this.listView1.TabIndex = 3;
-            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.groupBox1.Location = new System.Drawing.Point(25, 77);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(791, 298);
+            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Results";
             // 
             // Form1
             // 
@@ -78,7 +78,7 @@ namespace LOGExport {
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.White;
             this.ClientSize = new System.Drawing.Size(838, 387);
-            this.Controls.Add(this.listView1);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.BTNLoad);
             this.Controls.Add(this.BTNOpen);
             this.Controls.Add(this.textBox1);
@@ -95,7 +95,7 @@ namespace LOGExport {
         private System.Windows.Forms.Button BTNOpen;
         private System.Windows.Forms.Button BTNLoad;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog1;
-        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.GroupBox groupBox1;
     }
 }
 
