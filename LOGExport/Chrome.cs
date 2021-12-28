@@ -9,6 +9,5 @@ namespace LOGExport {
         public string serialNumber;
         public string macBluetooth;
         public string macWireless;
-
     }
 }

@@ -29,10 +29,30 @@ namespace LOGExport {
 
             string[] dir = Directory.GetFiles(textBox1.Text, "*.*", SearchOption.AllDirectories);
 
-            foreach (var item in dir) {
-                Console.WriteLine(item);
-            }
-           
+            List<Chrome> text = new List<Chrome>();
+
+            for (int i = 0; i < dir.Length; i++) {
+
+                string[] lines = File.ReadAllLines(dir[i]);
+
+                foreach (var line in lines) {                    
+
+                    if(line.Contains("wlan_mac is")) {
+                        int index = line.IndexOf("wlan_mac is");
+                        Console.WriteLine($"MAC_ADDRESS: {line.Substring(index + 12)}");
+                    }
+
+                    if (line.Contains("bt_mac is")) {                       
+                        int index = line.IndexOf("bt_mac is");
+                        Console.WriteLine($"MAC_BLUETOOTH: {line.Substring(index + 10)}");
+                    }
+
+                    if (line.Contains("main_garg:FAT.FATStart.ScanSN> [INFO] main_garg:FAT.FATStart.ScanSN device_data.py:300 2021-12-16 11:39:59.867 Updating device ")) {
+                        int index = line.IndexOf("serial_number");
+                        Console.WriteLine($"SERIAL_NUMBER: {line.Substring(index + 15)}");
+                    }
+                }   
+            }            
         }
 
         
