@@ -64,10 +64,12 @@ namespace LOGExport {
                     macWireless = regex.Replace(macAddress, ""),
                     serialNumber = regex.Replace(serialnumber, "")
                 }) ;                
-                
+                                
                 Console.WriteLine(i);
+                progressBar1.Value = i + 1;
+                label1.Text = string.Format("Processing...{0}", i);
             }
-
+            progressBar1.Maximum = text.Count;
             SetDataList(text);            
         }
 
