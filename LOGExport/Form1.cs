@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.IO;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Text.RegularExpressions;
 using MySql.Data.MySqlClient;
+using System.Threading.Tasks;
+using System.Threading;
 
 namespace LOGExport {
     public partial class Form1 : Form {
@@ -29,7 +25,7 @@ namespace LOGExport {
             }
         }
 
-        private void BTNLoad_Click(object sender, EventArgs e) {
+        private  void BTNLoad_Click(object sender, EventArgs e) {
 
             var regex = new Regex(@"\}");
 
@@ -50,7 +46,6 @@ namespace LOGExport {
                     if(line.Contains("factory.wlan_mac")) {
                         int index = line.IndexOf("factory.wlan_mac");
                         macAddress = line.Substring(index + 19);
-
                     }
 
                     if (line.Contains("bt_mac is")) {                       
@@ -68,12 +63,12 @@ namespace LOGExport {
                     macBluetooth = regex.Replace(macBluetooth, ""),
                     macWireless = regex.Replace(macAddress, ""),
                     serialNumber = regex.Replace(serialnumber, "")
-                }) ;
-
+                }) ;                
+                
                 Console.WriteLine(i);
             }
 
-            SetDataList(text);
+            SetDataList(text);            
         }
 
         private void SetDataList(List<Chrome> chrome) {
@@ -91,7 +86,7 @@ namespace LOGExport {
                         writer.WriteElementString("SERIAL_NUMBER", item.serialNumber.Replace("'", string.Empty));
                         writer.WriteEndElement();
 
-                        InsertDataBase(item.serialNumber.Replace("'", string.Empty), item.macWireless.Replace("'", string.Empty), item.macBluetooth.Replace(".", string.Empty));                        
+                        InsertDataBase(item.serialNumber.Replace("'", string.Empty), item.macWireless.Replace("'", string.Empty), item.macBluetooth.Replace(".", string.Empty));
                     }
 
                     writer.WriteEndElement();
@@ -102,8 +97,7 @@ namespace LOGExport {
                 MessageBox.Show(ex.Message);
             }
 
-            MessageBox.Show("FILE EXPORTED");
-            Application.Exit();
+            MessageBox.Show("FILE EXPORTED");            
         }   
 
         private void InsertDataBase(string serialNumber, string wireless, string bluetooth) {
@@ -115,10 +109,10 @@ namespace LOGExport {
 
                 conn.OpenConnetion();
                 cmd.Connection = conn.GetConnection();
-                cmd.CommandText = "INSERT INTO chrome.product (serialnumber, bluetooth, wireless) VALUES (@ser, @blu, @wir)";
+                cmd.CommandText = "INSERT INTO chrome.product (wireless, bluetooth, serialnumber) VALUES (@wir, @blu, @ser)";                
+                cmd.Parameters.Add(new MySqlParameter("@wir", wireless));
+                cmd.Parameters.Add(new MySqlParameter("@blu", bluetooth));
                 cmd.Parameters.Add(new MySqlParameter("@ser", serialNumber));
-                cmd.Parameters.Add(new MySqlParameter("@blu", wireless));
-                cmd.Parameters.Add(new MySqlParameter("@wir", bluetooth));
                 cmd.ExecuteNonQuery();
 
             } catch (Exception ex) {
@@ -128,7 +122,6 @@ namespace LOGExport {
             } finally {
                 conn.CloseConnetion();
             }  
-        }
-        
+        }       
     }
 }
