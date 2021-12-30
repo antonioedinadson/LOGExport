@@ -15,23 +15,27 @@ namespace LOGExport {
         }
 
         public string filePath;
-
+        private int countDir;        
 
         private void BTNOpen_Click(object sender, EventArgs e) {
             
             if(folderBrowserDialog1.ShowDialog() == DialogResult.OK) {
                 textBox1.Text = folderBrowserDialog1.SelectedPath;
                 filePath = folderBrowserDialog1.SelectedPath;
+                this.countDir = Directory.GetFiles(textBox1.Text, "*.*", SearchOption.AllDirectories).Length;
+                progressBar1.Value = 0;
+                progressBar1.Maximum = this.countDir - 1;
             }
         }
 
         private  void BTNLoad_Click(object sender, EventArgs e) {
-
+           
             var regex = new Regex(@"\}");
 
             string[] dir = Directory.GetFiles(textBox1.Text, "*.*", SearchOption.AllDirectories);
 
             List<Chrome> text = new List<Chrome>();
+            
 
             for (int i = 0; i < dir.Length; i++) {
 
@@ -41,7 +45,7 @@ namespace LOGExport {
                 string macBluetooth = "";
                 string serialnumber = "";
 
-                foreach (var line in lines) {                    
+                foreach (var line in lines) {
 
                     if(line.Contains("factory.wlan_mac")) {
                         int index = line.IndexOf("factory.wlan_mac");
@@ -55,51 +59,40 @@ namespace LOGExport {
 
                     if (line.Contains("{'serials.serial_number': '")) {
                         int index = line.IndexOf("{'serials.serial_number': '");
-                        serialnumber = line.Substring(index + 27);
+                        serialnumber = line.Substring(index + 27);                        
                     }
-                }
+                }                
 
                 text.Add(new Chrome() {
                     macBluetooth = regex.Replace(macBluetooth, ""),
                     macWireless = regex.Replace(macAddress, ""),
                     serialNumber = regex.Replace(serialnumber, "")
-                }) ;                
-                                
-                Console.WriteLine(i);
-                progressBar1.Value = i + 1;
-                label1.Text = string.Format("Processing...{0}", i);
+                }) ;
+                
+                progressBar1.Value = i;
+                Console.WriteLine($"{macAddress} - {macBluetooth} - {serialnumber}");
             }
-            progressBar1.Maximum = text.Count;
+
             SetDataList(text);            
-        }
+        }       
 
-        private void SetDataList(List<Chrome> chrome) {
+        private void SetDataList(List<Chrome> chrome) {            
 
-            try {
+            try {                
 
-                using (XmlWriter writer = XmlWriter.Create("CHROMEBOOKS.xml")) {
-
-                    writer.WriteStartElement("CHROMEBOOKS");
-
-                    foreach (var item in chrome) {
-                        writer.WriteStartElement("DEVICE");
-                        writer.WriteElementString("MAC_ADDRESS", item.macWireless.Replace("'", string.Empty));
-                        writer.WriteElementString("MAC_BLUETOOTH", item.macBluetooth.Replace(".", string.Empty));
-                        writer.WriteElementString("SERIAL_NUMBER", item.serialNumber.Replace("'", string.Empty));
-                        writer.WriteEndElement();
-
-                        InsertDataBase(item.serialNumber.Replace("'", string.Empty), item.macWireless.Replace("'", string.Empty), item.macBluetooth.Replace(".", string.Empty));
-                    }
-
-                    writer.WriteEndElement();
-                    writer.Flush();
-                }                
+                foreach (var item in chrome) {
+                    InsertDataBase(
+                        item.serialNumber.Replace("'", string.Empty), 
+                        item.macWireless.Replace("'", string.Empty), 
+                        item.macBluetooth.Replace(".", string.Empty)
+                    );
+                }
 
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message);
             }
 
-            MessageBox.Show("FILE EXPORTED");            
+            MessageBox.Show($"{this.countDir} EXPORTEDS");
         }   
 
         private void InsertDataBase(string serialNumber, string wireless, string bluetooth) {
